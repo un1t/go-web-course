@@ -1,14 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"regexp"
+	"strings"
 )
 
 func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", index)
-	mux.HandleFunc("/hello/{username}", hello)
+	mux.HandleFunc("/hello/", hello)
 
 	http.ListenAndServe(":3000", mux)
 }
@@ -22,7 +25,13 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello, user"))
+	pathRegexp := regexp.MustCompile(`^/hello/\w+$`)
+	if !pathRegexp.Match([]byte(r.URL.Path)) {
+		handler404(w, r)
+		return
+	}
+	username := strings.Split(r.URL.Path, "/")[2]
+	fmt.Fprintf(w, "Hello, %s", username)
 }
 
 func handler404(w http.ResponseWriter, r *http.Request) {
