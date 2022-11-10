@@ -26,7 +26,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 func hello(w http.ResponseWriter, r *http.Request) {
 	pathRegexp := regexp.MustCompile(`^/hello/\w+$`)
-	if !pathRegexp.Match([]byte(r.URL.Path)) {
+	if !pathRegexp.MatchString(r.URL.Path) {
 		handler404(w, r)
 		return
 	}
