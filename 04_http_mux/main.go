@@ -1,16 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 )
 
 func main() {
-	mux := http.NewServeMux()
+	http.HandleFunc("/", index)
+	http.HandleFunc("/hello/", hello)
 
-	mux.HandleFunc("/", index)
-	mux.HandleFunc("/hello", hello)
-
-	http.ListenAndServe(":3000", mux)
+	http.ListenAndServe(":3000", nil)
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
@@ -18,5 +18,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello, user"))
+	name := strings.Split(r.URL.Path, "/")[2]
+	w.Write([]byte(fmt.Sprintf("Hello, %s", name)))
 }
