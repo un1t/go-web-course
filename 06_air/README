@@ -1,0 +1,5 @@
+https://github.com/cosmtrek/air
+
+https://www.npmjs.com/package/nodemon
+
+nodemon -e go -x 'go run main.go || exit 1' --signal SIGTERM
