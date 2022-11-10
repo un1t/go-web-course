@@ -26,5 +26,8 @@ func (MyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.ListenAndServe(":3000", MyHandler{})
+	err := http.ListenAndServe(":3000", MyHandler{})
+	if err != nil {
+		panic(err)
+	}
 }

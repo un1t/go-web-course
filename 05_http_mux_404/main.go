@@ -13,7 +13,10 @@ func main() {
 	mux.HandleFunc("/", index)
 	mux.HandleFunc("/hello/", hello)
 
-	http.ListenAndServe(":3000", mux)
+	err := http.ListenAndServe(":3000", mux)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func index(w http.ResponseWriter, r *http.Request) {

@@ -10,7 +10,10 @@ func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/hello/", hello)
 
-	http.ListenAndServe(":3000", nil)
+	err := http.ListenAndServe(":3000", nil)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
