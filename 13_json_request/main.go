@@ -13,7 +13,10 @@ type User struct {
 
 func main() {
 	http.HandleFunc("/user", UserHandler)
-	http.ListenAndServe(":3000", nil)
+	err := http.ListenAndServe(":3000", nil)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func WriteJson(w http.ResponseWriter, status int, v any) error {
