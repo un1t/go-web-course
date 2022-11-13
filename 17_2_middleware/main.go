@@ -11,8 +11,15 @@ func main() {
 	mux.HandleFunc("/", HomeHandler)
 	mux.HandleFunc("/foo", FooHandler)
 
-	handler := MyMiddleware(mux)
-	handler = SecondMiddleware(handler)
+	middlewares := []func(http.Handler) http.Handler{
+		MyMiddleware,
+		SecondMiddleware,
+	}
+
+	handler := http.Handler(mux)
+	for i := len(middlewares) - 1; i >= 0; i-- {
+		handler = middlewares[i](handler)
+	}
 
 	err := http.ListenAndServe(":3000", handler)
 	if err != nil {
