@@ -1,0 +1,10 @@
+{{block "header" .}}
+    Header default.
+{{end}}
+
+{{block "main" .}}
+    Main default.
+{{end}}
+
+Footer
+

@@ -1,0 +1,3 @@
+{{define "main"}}
+page 1
+{{end}}

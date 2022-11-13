@@ -1,0 +1,7 @@
+{{define "header"}}
+header 2
+{{end}}
+
+{{define "main"}}
+page 2
+{{end}}
