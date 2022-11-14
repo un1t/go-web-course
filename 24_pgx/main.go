@@ -17,73 +17,115 @@ func main() {
 		os.Exit(1)
 	}
 	defer conn.Close(context.Background())
+
+	// user, err := GetUser(conn, 2)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Printf("get user: %+v", user)
+
+	// users, err := GetUsers(conn)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Printf("get users: %+v", users)
+
+	// userId, err := InsertUser(conn, User{Name: "Test", Email: "test@test"})
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Printf("new user id: %d", userId)
+
+	// rowsAffected, err := DeleteUser(conn, 1)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Printf("delete users: %d", rowsAffected)
+
 }
 
 type User struct {
-	Id       int
-	Name     string
-	Language string
+	Id    int
+	Name  string
+	Email string
+	// Photos []Photo
 }
 
-func GetUser(conn *pgx.Conn, userId int) {
+// type Photo struct {
+// 	UserId    int
+// 	Filename  string
+// 	Width     int
+// 	Height    int
+// 	CreatedAt time.Time
+// }
+
+func GetUser(conn *pgx.Conn, userId int) (User, error) {
 	var user User
 	row := conn.QueryRow(
 		context.Background(),
-		"select id, name, language from users where id=$1",
+		"select id, name, email from users where id=$1",
 		userId,
 	)
 	err := row.Scan(
 		&user.Id,
 		&user.Name,
-		&user.Language,
+		&user.Email,
 	)
-	fmt.Printf("User info: %+v\n", user)
 	if err != nil {
-		panic(err)
+		return user, err
 	}
+	return user, nil
 }
 
-func GetUsers(conn *pgx.Conn) {
+func GetUsers(conn *pgx.Conn) ([]User, error) {
+	users := make([]User, 0)
+
 	rows, err := conn.Query(
 		context.Background(),
-		"select name, weight from widgets where",
+		"select id, name, email from users",
 	)
 	if err != nil {
-		panic(err)
+		return users, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		var user User
-		err := rows.Scan(&user.Id, &user.Name, &user.Language)
+		err := rows.Scan(
+			&user.Id,
+			&user.Name,
+			&user.Email,
+		)
 		if err != nil {
-			panic(err)
+			return []User{}, err
 		}
-		fmt.Printf("%+v\n", user)
+		users = append(users, user)
 	}
+
+	return users, nil
 }
 
-func InsertUser(conn *pgx.Conn, user User) {
+func InsertUser(conn *pgx.Conn, user User) (int, error) {
 	var id int
 	err := conn.QueryRow(
 		context.Background(),
-		"insert into users(name, language) values($1, $2)",
-		user.Name, user.Language,
+		"insert into users(name, email) values($1, $2) returning id",
+		user.Name, user.Email,
 	).Scan(&id)
 	if err != nil {
-		panic(err)
+		return 0, err
 	}
-	fmt.Printf("new user id: %d\n", id)
+	return id, nil
 }
 
-func DeleteUser(conn *pgx.Conn, userId int) {
+func DeleteUser(conn *pgx.Conn, userId int) (int, error) {
 	tag, err := conn.Exec(
 		context.Background(),
 		"delete from users where id=$1",
 		userId,
 	)
-	fmt.Println("rows updated", tag.RowsAffected())
 	if err != nil {
-		panic(err)
+		return 0, err
 	}
+	return int(tag.RowsAffected()), nil
 }
