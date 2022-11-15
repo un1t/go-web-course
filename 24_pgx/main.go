@@ -3,13 +3,18 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	os.Setenv("DATABASE_URL", "postgres://postgres:123@localhost:5432/go_dev")
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
 	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
@@ -18,11 +23,11 @@ func main() {
 	}
 	defer conn.Close(context.Background())
 
-	// user, err := GetUser(conn, 2)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// fmt.Printf("get user: %+v", user)
+	user, err := GetUser(conn, 2)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("get user: %+v", user)
 
 	// users, err := GetUsers(conn)
 	// if err != nil {

@@ -1,7 +1,10 @@
 package main
 
 import (
+	"log"
 	"os"
+
+	"github.com/joho/godotenv"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -10,7 +13,11 @@ import (
 )
 
 func main() {
-	os.Setenv("DATABASE_URL", "postgres://postgres:123@localhost:5432/go_dev")
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	databaseUrl := os.Getenv("DATABASE_URL")
 
 	db, err := gorm.Open(postgres.Open(databaseUrl), &gorm.Config{})

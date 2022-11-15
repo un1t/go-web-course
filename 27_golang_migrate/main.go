@@ -2,7 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
+	"log"
 	"os"
+
+	"github.com/joho/godotenv"
 
 	migrate "github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -11,7 +15,11 @@ import (
 )
 
 func main() {
-	os.Setenv("DATABASE_URL", "postgres://postgres:123@localhost:5432/go_dev")
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	databaseUrl := os.Getenv("DATABASE_URL")
 
 	db, err := sql.Open("postgres", databaseUrl)
@@ -30,5 +38,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	m.Up()
+
+	err = m.Up()
+	if err != nil {
+		if err != migrate.ErrNoChange {
+			panic(err)
+		}
+	}
+	fmt.Println("ok")
 }
