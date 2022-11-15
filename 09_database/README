@@ -1,0 +1,22 @@
+# database/sql
+https://pkg.go.dev/database/sql
+https://github.com/golang/go/wiki/SQLDrivers
+https://github.com/golang/go/wiki/SQLInterface
+
+# pgx
+https://github.com/jackc/pgx
+https://github.com/jackc/pgx/wiki/Getting-started-with-pgx
+https://github.com/jackc/pgx/wiki/Getting-started-with-pgx-through-database-sql
+
+# GORM
+https://gorm.io/docs/
+https://gorm.io/docs/connecting_to_the_database.html
+https://gorm.io/docs/sql_builder.html
+https://gorm.io/docs/generic_interface.html
+
+# goose
+https://github.com/pressly/goose
+
+# golang-migrate
+https://github.com/golang-migrate
+https://github.com/golang-migrate/migrate/blob/master/GETTING_STARTED.md

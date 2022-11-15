@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
@@ -55,19 +56,19 @@ func main() {
 }
 
 type User struct {
-	Id    int
-	Name  string
-	Email string
-	// Photos []Photo
+	Id     int
+	Name   string
+	Email  string
+	Photos []Photo
 }
 
-// type Photo struct {
-// 	UserId    int
-// 	Filename  string
-// 	Width     int
-// 	Height    int
-// 	CreatedAt time.Time
-// }
+type Photo struct {
+	UserId    int
+	Filename  string
+	Width     int
+	Height    int
+	CreatedAt time.Time
+}
 
 func GetUser(conn *pgx.Conn, userId int) (User, error) {
 	var user User
