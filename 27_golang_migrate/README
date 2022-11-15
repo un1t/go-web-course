@@ -1,0 +1,4 @@
+migrate create -ext sql -dir ./migrations -seq init
+migrate create -ext sql -dir ./migrations -seq photos
+migrate -source file://./migrations -database postgres://postgres:123@localhost:5432/go_dev up
+
