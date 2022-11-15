@@ -1,13 +1,14 @@
 package main
 
 import (
+	"database/sql"
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/joho/godotenv"
 
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	_ "github.com/jackc/pgx/v5/stdlib"
 
 	"github.com/pressly/goose/v3"
 )
@@ -20,21 +21,18 @@ func main() {
 
 	databaseUrl := os.Getenv("DATABASE_URL")
 
-	db, err := gorm.Open(postgres.Open(databaseUrl), &gorm.Config{})
+	db, err := sql.Open("pgx", databaseUrl)
 	if err != nil {
-		panic("failed to connect database")
+		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		os.Exit(1)
 	}
-
-	sqlDB, err := db.DB()
-	if err != nil {
-		panic(err)
-	}
+	defer db.Close()
 
 	if err := goose.SetDialect("postgres"); err != nil {
 		panic(err)
 	}
 
-	if err := goose.Up(sqlDB, "migrations"); err != nil {
+	if err := goose.Up(db, "migrations"); err != nil {
 		panic(err)
 	}
 
