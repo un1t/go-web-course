@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -33,8 +34,11 @@ func (Photo) TableName() string {
 }
 
 func main() {
-	dsn := "host=localhost user=postgres password=123 dbname=go_dev"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	os.Setenv("DATABASE_URL", "postgres://postgres:123@localhost:5432/go_dev")
+
+	databaseUrl := os.Getenv("DATABASE_URL")
+
+	db, err := gorm.Open(postgres.Open(databaseUrl), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
