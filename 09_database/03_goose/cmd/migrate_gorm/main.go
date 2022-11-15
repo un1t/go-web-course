@@ -19,6 +19,9 @@ func main() {
 	}
 
 	databaseUrl := os.Getenv("DATABASE_URL")
+	if databaseUrl == "" {
+		panic("DATABASE_URL is empty")
+	}
 
 	db, err := gorm.Open(postgres.Open(databaseUrl), &gorm.Config{})
 	if err != nil {

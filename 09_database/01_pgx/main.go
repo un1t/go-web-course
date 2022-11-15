@@ -16,7 +16,12 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	databaseUrl := os.Getenv("DATABASE_URL")
+	if databaseUrl == "" {
+		panic("DATABASE_URL is empty")
+	}
+
+	conn, err := pgx.Connect(context.Background(), databaseUrl)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)

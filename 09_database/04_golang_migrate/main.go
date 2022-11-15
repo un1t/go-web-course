@@ -21,6 +21,9 @@ func main() {
 	}
 
 	databaseUrl := os.Getenv("DATABASE_URL")
+	if databaseUrl == "" {
+		panic("DATABASE_URL is empty")
+	}
 
 	db, err := sql.Open("postgres", databaseUrl)
 	if err != nil {

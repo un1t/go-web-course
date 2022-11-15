@@ -2,8 +2,8 @@
 -- +goose StatementBegin
 create table users(
     id serial primary key,
-    name varchar(50),
-    email varchar(100)
+    name varchar(50) not null,
+    email varchar(100) not null
 );
 
 insert into users(name, email) values

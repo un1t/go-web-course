@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"time"
 
@@ -38,17 +37,20 @@ func (Photo) TableName() string {
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		panic("Error loading .env file")
 	}
 
 	databaseUrl := os.Getenv("DATABASE_URL")
+	if databaseUrl == "" {
+		panic("DATABASE_URL is empty")
+	}
 
 	db, err := gorm.Open(postgres.Open(databaseUrl), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
 
-	user, err := GetUser(db, 2)
+	user, err := GetUser(db, 222)
 	if err != nil {
 		panic(err)
 	}
@@ -81,7 +83,7 @@ func PrintJson(v any) {
 
 func GetUser(db *gorm.DB, userId int) (User, error) {
 	var user User
-	err := db.Take(&user).Error
+	err := db.Take(&user, userId).Error
 	return user, err
 }
 
