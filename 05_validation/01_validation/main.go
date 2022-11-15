@@ -13,7 +13,7 @@ type User struct {
 	Id    int    `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
-	Phone string `json:"phone"`
+	Phone string `json:"phone"`03_tools
 }
 
 func (u User) Validate() error {
