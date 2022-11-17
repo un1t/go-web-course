@@ -3,15 +3,11 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"log"
 	"net/http"
 )
-
-type User struct {
-	Id   int
-	Name string
-}
 
 func main() {
 	mux := http.NewServeMux()
@@ -33,6 +29,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+type User struct {
+	Id   int
+	Name string
 }
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
@@ -87,17 +88,20 @@ func AuthMiddleware(handler http.Handler) http.Handler {
 		cookie, _ := r.Cookie("session")
 		if cookie != nil {
 			sessionId := cookie.Value
-			user := GetUserBySession(sessionId)
-			ctx := context.WithValue(r.Context(), "user", user)
+			user, _ := GetUserBySessionId(sessionId)
+
+			ctx := r.Context()
+			ctx = context.WithValue(ctx, "user", user)
 			r = r.WithContext(ctx)
 		}
+
 		handler.ServeHTTP(w, r)
 	})
 }
 
-func GetUserBySession(sessionId string) User {
-	if sessionId == "951676a0b27bb43e1cd59aca26943d10" {
-		return User{Id: 1, Name: "admin"}
+func GetUserBySessionId(sessionId string) (User, error) {
+	if sessionId == "123" {
+		return User{Id: 1, Name: "admin"}, nil
 	}
-	return User{}
+	return User{}, errors.New("session not found")
 }
