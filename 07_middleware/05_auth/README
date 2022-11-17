@@ -1,0 +1,1 @@
+ curl --cookie "session=951676a0b27bb43e1cd59aca26943d10" localhost:3000/getme

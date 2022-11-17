@@ -2,11 +2,10 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"io"
 	"log"
 	"net/http"
-	"strings"
 )
 
 type User struct {
@@ -18,11 +17,10 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", HomeHandler)
-	mux.HandleFunc("/foo", FooHandler)
+	mux.HandleFunc("/getme", GetMeHandler)
 
 	middlewares := []func(http.Handler) http.Handler{
 		LoggingMiddleware,
-		SessionMiddleware,
 		AuthMiddleware,
 	}
 
@@ -38,15 +36,32 @@ func main() {
 }
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("home")
-	w.Write([]byte("Home"))
+	WriteJSON(w, map[string]any{
+		"ok": true,
+	})
 }
 
-func FooHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("foo")
+func GetMeHandler(w http.ResponseWriter, r *http.Request) {
 	user, _ := r.Context().Value("user").(User)
-	fmt.Printf("%+v\n", user)
-	w.Write([]byte("Foo"))
+
+	if user.Id == 0 {
+		w.WriteHeader(http.StatusUnauthorized)
+		WriteJSON(w, map[string]any{
+			"ok":    false,
+			"error": "unauthorized",
+		})
+		return
+	}
+
+	WriteJSON(w, map[string]any{
+		"ok":   true,
+		"user": user,
+	})
+}
+
+func WriteJSON(w io.Writer, v any) {
+	bytes, _ := json.Marshal(v)
+	w.Write(bytes)
 }
 
 type MyResponseWriter struct {
@@ -67,7 +82,7 @@ func LoggingMiddleware(handler http.Handler) http.Handler {
 	})
 }
 
-func SessionMiddleware(handler http.Handler) http.Handler {
+func AuthMiddleware(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		cookie, _ := r.Cookie("session")
 		if cookie != nil {
@@ -81,24 +96,8 @@ func SessionMiddleware(handler http.Handler) http.Handler {
 }
 
 func GetUserBySession(sessionId string) User {
-	if sessionId == "123" {
-		return User{Name: "admin"}
+	if sessionId == "951676a0b27bb43e1cd59aca26943d10" {
+		return User{Id: 1, Name: "admin"}
 	}
 	return User{}
-}
-
-func AuthMiddleware(handler http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		user, _ := r.Context().Value("user").(User)
-		adminRequired := strings.HasPrefix(r.URL.Path, "/admin/")
-		isAdmin := user.Name != "admin"
-
-		if adminRequired && !isAdmin {
-			w.WriteHeader(http.StatusForbidden)
-			io.WriteString(w, "403 forbidden")
-			return
-		}
-
-		handler.ServeHTTP(w, r)
-	})
 }
