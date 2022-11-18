@@ -3,27 +3,23 @@ package main
 import (
 	"example/internal/app"
 	"fmt"
-	"log"
-
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
+	app := app.NewApp()
+	err := app.Config.Load(".env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		panic(err)
 	}
 
-	server := app.NewApp()
-
-	err = server.Configure()
+	err = app.Setup()
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println("Starting is running.")
 
-	err = server.Run()
+	err = app.Run()
 	if err != nil {
 		panic(err)
 	}
