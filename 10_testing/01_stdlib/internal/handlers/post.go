@@ -21,7 +21,7 @@ func GetPosts(db *gorm.DB) http.HandlerFunc {
 			return
 		}
 
-		rest.WriteJSON(w, http.StatusCreated, rest.Response{
+		rest.WriteJSON(w, http.StatusOK, rest.Response{
 			Ok:     true,
 			Result: posts,
 		})
@@ -49,7 +49,7 @@ func GetPost(db *gorm.DB) http.HandlerFunc {
 			return
 		}
 
-		rest.WriteJSON(w, http.StatusCreated, rest.Response{
+		rest.WriteJSON(w, http.StatusOK, rest.Response{
 			Ok:     true,
 			Result: post,
 		})
@@ -106,7 +106,7 @@ func UpdatePost(db *gorm.DB) http.HandlerFunc {
 			return
 		}
 
-		rest.WriteJSON(w, http.StatusCreated, rest.Response{
+		rest.WriteJSON(w, http.StatusOK, rest.Response{
 			Ok:     true,
 			Result: post.Id,
 		})
@@ -133,7 +133,7 @@ func DeletePost(db *gorm.DB) http.HandlerFunc {
 			return
 		}
 
-		rest.WriteJSON(w, http.StatusCreated, rest.Response{
+		rest.WriteJSON(w, http.StatusOK, rest.Response{
 			Ok: true,
 		})
 	})

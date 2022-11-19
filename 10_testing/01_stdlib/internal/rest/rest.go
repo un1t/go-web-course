@@ -2,7 +2,7 @@ package rest
 
 import (
 	"encoding/json"
-	"io"
+	"net/http"
 )
 
 type Response struct {
@@ -11,12 +11,13 @@ type Response struct {
 	Error  string `json:"error,omitempty"`
 }
 
-func WriteJSON(w io.Writer, status int, v any) {
+func WriteJSON(w http.ResponseWriter, status int, v any) {
 	bytes, _ := json.Marshal(v)
+	w.WriteHeader(status)
 	w.Write(bytes)
 }
 
-func WriteError(w io.Writer, status int, err error) {
+func WriteError(w http.ResponseWriter, status int, err error) {
 	WriteJSON(w, status, Response{
 		Ok:    false,
 		Error: err.Error(),
