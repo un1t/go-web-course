@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"strings"
@@ -10,7 +9,8 @@ import (
 )
 
 func SetupDB(db *gorm.DB) error {
-	sql, err := ConcatMigrations("../../migrations/*.up.sql")
+	pattern := filepath.Join(GetProjectRoot(), "migrations", "*.up.sql")
+	sql, err := ConcatMigrations(pattern)
 	if err != nil {
 		return err
 	}
@@ -28,7 +28,8 @@ func SetupDB(db *gorm.DB) error {
 }
 
 func TeardownDB(db *gorm.DB) error {
-	sql, err := ConcatMigrations("../../migrations/*.down.sql")
+	pattern := filepath.Join(GetProjectRoot(), "migrations", "*.down.sql")
+	sql, err := ConcatMigrations(pattern)
 	if err != nil {
 		return err
 	}
@@ -52,10 +53,7 @@ func ConcatMigrations(pattern string) (string, error) {
 		if err != nil {
 			return "", err
 		}
-		contents = append(
-			contents,
-			fmt.Sprintf("-- %s\n\n%s", filename, string(bytes)),
-		)
+		contents = append(contents, string(bytes))
 	}
 	return strings.Join(contents, "\n\n"), nil
 }

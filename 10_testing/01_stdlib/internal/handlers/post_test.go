@@ -7,12 +7,17 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"path/filepath"
 	"testing"
 )
 
 func TestGetPost(t *testing.T) {
+	var err error
+
 	app := app.NewApp()
-	err := app.Config.Load("../../.env.test")
+
+	configPath := filepath.Join(tests.GetProjectRoot(), ".env.test")
+	err = app.Config.Load(configPath)
 	if err != nil {
 		t.Fatal(err)
 	}
