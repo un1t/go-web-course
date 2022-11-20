@@ -53,6 +53,7 @@ func (app *App) Setup() error {
 	r.HandleFunc(`/post/{id:\d+}`, handlers.GetPost(db)).Methods("GET")
 	r.HandleFunc(`/post/{id:\d+}`, handlers.UpdatePost(db)).Methods("PUT")
 	r.HandleFunc("/post", handlers.DeletePost(db)).Methods("DELETE")
+	r.HandleFunc("/ping", handlers.Ping)
 
 	app.Router = r
 	app.DB = db
