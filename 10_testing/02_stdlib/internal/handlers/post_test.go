@@ -1,8 +1,10 @@
 package handlers_test
 
 import (
+	"encoding/json"
 	"example/internal/app"
 	"example/internal/models"
+	"example/internal/rest"
 	"example/internal/tests"
 	"fmt"
 	"net/http"
@@ -56,10 +58,24 @@ func TestGetPost(t *testing.T) {
 	handler.ServeHTTP(w, req)
 
 	if w.Code != http.StatusOK {
-		t.Fatalf("status code: got %d want %d", w.Code, http.StatusOK)
+		t.Fatalf("status code: expected %d, got %d", http.StatusOK, w.Code)
 	}
 
-	content := w.Body.String()
+	type PostReponse struct {
+		rest.Response
+		Result models.Post `json:"result"`
+	}
+	var response PostReponse
 
-	t.Log(content)
+	json.Unmarshal(w.Body.Bytes(), &response)
+
+	if response.Result.Title != "some title" {
+		t.Fatalf(`title: expected "%s", got "%s"`,
+			"some content", response.Result.Title)
+	}
+
+	if response.Result.Text != "some content" {
+		t.Fatalf(`text: expected "%s", got "%s"`,
+			"some content", response.Result.Text)
+	}
 }
