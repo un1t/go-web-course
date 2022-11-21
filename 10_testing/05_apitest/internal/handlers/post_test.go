@@ -25,10 +25,6 @@ func TestGetPost(t *testing.T) {
 	err := db.Create(&post).Error
 	assert.Nil(t, err)
 
-	type PostResponse struct {
-		Result models.Post `json:"result"`
-	}
-
 	url := fmt.Sprintf("/post/%d", post.Id)
 
 	apitest.
@@ -36,14 +32,6 @@ func TestGetPost(t *testing.T) {
 		Get(url).
 		Expect(t).
 		Status(http.StatusOK).
-		// Body(`{
-		// 	"ok": true,
-		// 	"result": {
-		// 		"id":1,
-		// 		"text":"some content",
-		// 		"title":"some title"
-		// 	}
-		// }`).
 		Assert(
 			jsonpath.Chain().
 				Equal("ok", true).
@@ -51,18 +39,5 @@ func TestGetPost(t *testing.T) {
 				Equal("result.text", "some content").
 				End(),
 		).
-		// Assert(func(resp *http.Response, req *http.Request) error {
-		// 	var postResponse PostResponse
-		// 	err := json.NewDecoder(resp.Body).Decode(&postResponse)
-		// 	if err != nil {
-		// 		return err
-		// 	}
-
-		// 	assert.Equal(t, "some title", postResponse.Result.Title)
-		// 	assert.Equal(t, "some content", postResponse.Result.Text)
-		// 	assert.True(t, postResponse.Result.CreatedAt.Before(time.Now()))
-
-		// 	return nil
-		// }).
 		End()
 }

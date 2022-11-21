@@ -9,18 +9,17 @@ import (
 )
 
 func AppSetup(t *testing.T) *app.App {
-	var err error
-
 	app := app.NewApp()
 
 	configPath := filepath.Join(GetProjectRoot(), ".env.test")
-	err = app.Config.Load(configPath)
+	err := app.Config.Load(configPath)
 	require.Nil(t, err)
 
 	err = app.Setup()
 	require.Nil(t, err)
 
 	MigrateUp(app.DB)
+
 	return &app
 }
 
