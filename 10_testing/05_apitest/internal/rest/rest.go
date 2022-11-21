@@ -12,6 +12,7 @@ type Response struct {
 }
 
 func WriteJSON(w http.ResponseWriter, status int, v any) {
+	w.Header().Set("Content-Type", "application/json")
 	bytes, _ := json.Marshal(v)
 	w.WriteHeader(status)
 	w.Write(bytes)

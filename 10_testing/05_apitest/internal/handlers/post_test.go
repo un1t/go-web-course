@@ -32,6 +32,7 @@ func TestGetPost(t *testing.T) {
 		Get(url).
 		Expect(t).
 		Status(http.StatusOK).
+		Header("Content-Type", "application/json").
 		Assert(
 			jsonpath.Chain().
 				Equal("ok", true).
