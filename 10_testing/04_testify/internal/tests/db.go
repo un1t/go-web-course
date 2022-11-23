@@ -3,6 +3,7 @@ package tests
 import (
 	"io/ioutil"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"gorm.io/gorm"
@@ -47,6 +48,9 @@ func ConcatMigrations(pattern string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	sort.Strings(filenames)
+
 	var contents []string
 	for _, filename := range filenames {
 		bytes, err := ioutil.ReadFile(filename)
