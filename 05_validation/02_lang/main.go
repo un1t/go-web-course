@@ -10,21 +10,25 @@ import (
 )
 
 type User struct {
-	Id    int    `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Phone string `json:"phone"`
+	Id    int    `json:"id" ozzo:"id"`
+	Name  string `json:"name" ozzo:"имя"`
+	Email string `json:"email" ozzo:"почта"`
+	Phone string `json:"phone" ozzo:"телефон"`
 }
 
 func (u User) Validate() error {
 	return validation.ValidateStruct(&u,
-		validation.Field(&u.Name, validation.Required, validation.Length(2, 50)),
-		validation.Field(&u.Email, validation.Required),
-		validation.Field(&u.Phone, is.E164),
+		validation.Field(&u.Name, validation.Required,
+			validation.Length(2, 50).Error("длинна должна быть от 2 до 50 символов")),
+		validation.Field(&u.Email, validation.Required,
+			is.Email.Error("неверный адрес почты")),
+		validation.Field(&u.Phone, is.E164.Error("неверный номер")),
 	)
 }
 
 func main() {
+	validation.ErrorTag = "ozzo"
+
 	http.HandleFunc("/user", UserHandler)
 	err := http.ListenAndServe(":3000", nil)
 	if err != nil {
